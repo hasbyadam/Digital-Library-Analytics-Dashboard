@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    image: backend
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./backend/.env:/app/.env
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    image: postgres:latest
+    container_name: PostgresCont 
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - '54320:5432'
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+volumes:
+  postgres_db:
+    driver: local
