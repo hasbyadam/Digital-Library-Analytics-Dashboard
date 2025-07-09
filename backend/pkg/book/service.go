@@ -1,10 +1,17 @@
 package book
 
-import "github.com/hasbyadam/Digital-Library-Analytics-Dashboard/pkg/entity"
+import (
+	"github.com/google/uuid"
+	"github.com/hasbyadam/Digital-Library-Analytics-Dashboard/pkg/entity"
+	"github.com/hasbyadam/Digital-Library-Analytics-Dashboard/rest/presenter"
+)
 
 // Service is an interface from which our api module can access our repository of all our models
 type Service interface {
-	
+	InsertBook(*entity.Book) (*entity.Book, error)
+	FetchBook() (*[]presenter.Book, error)
+	UpdateBook(*entity.Book) (*entity.Book, error)
+	RemoveBook(ID uuid.UUID) error
 }
 
 type service struct {
@@ -20,5 +27,17 @@ func NewService(r Repository) Service {
 
 // InsertBook is a service layer that helps insert book in BookShop
 func (s *service) InsertBook(book *entity.Book) (*entity.Book, error) {
-	return nil, nil
+	return s.repository.AddBook(book)
+}
+
+func (s *service) FetchBook() (*[]presenter.Book, error) {
+	return s.repository.ReadBook()
+}
+
+func (s *service) UpdateBook(book *entity.Book) (*entity.Book, error) {
+	return s.repository.UpdateBook(book)
+}
+
+func (s *service)RemoveBook(ID uuid.UUID) error {
+	return s.repository.DeleteBook(ID)
 }

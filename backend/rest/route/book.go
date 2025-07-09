@@ -8,7 +8,10 @@ import (
 
 // BookRouter is the Router for GoFiber App
 func BookRouter(app fiber.Router, service book.Service) {
-	app.Get("/books", handler.GetBooks(service))
+	app.Get("/book", handler.GetBooks(service))
+	app.Post("/book", handler.AddBook(service))
+	app.Put("/book", handler.UpdateBook(service))
+	app.Delete("/book", handler.RemoveBook(service))
 }
 
 
