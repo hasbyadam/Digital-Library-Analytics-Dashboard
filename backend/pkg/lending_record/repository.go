@@ -59,9 +59,9 @@ func (r *repository) FetchLendingRecordById(id uuid.UUID) (*entity.LendingRecord
 func (r *repository) FetchLendingRecords() (*[]presenter.LendingRecord, error) {
 	var data []presenter.LendingRecord
 
-    tx := r.Db.Table("digital_library.lending_records").
+    tx := r.Db.Table("digital_library.lending_records").Order("lending_records.created_at desc").
         Select("lending_records.*, books.*").
-        Joins("left join digital_library.books on digital_library.lending_records.book_id = books.id").
+        Joins("left join digital_library.books on digital_library.lending_records.book_id = books.id").Where("lending_records.deleted_at IS NULL").
         Find(&data)
 
     if tx.Error != nil {

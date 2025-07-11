@@ -30,7 +30,7 @@ func NewRepo(db *gorm.DB) Repository {
 // CreateBook is a postgresql repository that helps to create books
 func (r *repository) ReadBook() (*[]presenter.Book, error) {
 	var book []entity.Book
-	tx := r.Db.Table("digital_library.books").Find(&book)
+	tx := r.Db.Table("digital_library.books").Order("created_at desc").Find(&book)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
