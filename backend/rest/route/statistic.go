@@ -9,4 +9,6 @@ import (
 func StatisticRouter(app fiber.Router, service statistic.Service) {
 	statistic := app.Group("/statistic")
 	statistic.Get("/monthly-trend", handler.GetMonthlyTrend(service))
+	statistic.Get("/most-borrowed-book", handler.GetMostBorrowedBook(service))
+	statistic.Get("/books-by-category", handler.GetBooksByCategory(service))
 }

@@ -8,6 +8,8 @@ import (
 // Repository interface allows us to access the CRUD Operations.
 type Repository interface {
 	FetchMonthlyTrend() (*[]entity.MonthlyTrend, error)
+    FetchMostBorrowedBooks() (*[]entity.MostBorrowedBook, error)
+    FetchBooksByCategory() (*[]entity.BooksByCategory, error)
 }
 type repository struct {
 	Db *gorm.DB
@@ -74,3 +76,53 @@ func (r *repository) FetchMonthlyTrend() (*[]entity.MonthlyTrend, error) {
     }
     return &trends, nil
 }
+
+func (r *repository) FetchMostBorrowedBooks() (*[]entity.MostBorrowedBook, error) {
+    var mostBorrowedBooks []entity.MostBorrowedBook
+    query := `
+        SELECT
+            b.id AS book_id,
+            b.title,
+            b.author,
+            b.category,
+            COUNT(lr.id) AS total_borrows
+        FROM
+            digital_library.books b
+        LEFT JOIN
+            digital_library.lending_records lr 
+            ON b.id = lr.book_id AND lr.deleted_at IS NULL
+        GROUP BY
+            b.id, b.title, b.author, b.category
+        ORDER BY
+            total_borrows DESC
+        LIMIT 5
+    `
+    tx := r.Db.Raw(query).Scan(&mostBorrowedBooks)
+    if tx.Error != nil {
+        return nil, tx.Error
+    }
+    return &mostBorrowedBooks, nil
+}
+
+func (r *repository) FetchBooksByCategory() (*[]entity.BooksByCategory, error) {
+    var booksByCategory []entity.BooksByCategory
+    query := `
+        SELECT
+            category,
+            COUNT(*) AS total_books
+        FROM
+            digital_library.books
+        WHERE
+            deleted_at IS NULL
+        GROUP BY
+            category
+        ORDER BY
+            total_books DESC
+    `
+    tx := r.Db.Raw(query).Scan(&booksByCategory)
+    if tx.Error != nil {
+        return nil, tx.Error
+    }
+    return &booksByCategory, nil
+}
+

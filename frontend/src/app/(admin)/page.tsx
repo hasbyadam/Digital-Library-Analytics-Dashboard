@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import React from "react";
-import StatisticsChart from "@/components/visualization/lendingTrend";
+import LendingTrend from "@/components/visualization/lendingTrend";
+import MostBorrowedBook from "@/components/visualization/MostBorrowedBook";
+import BooksByCategory from "@/components/visualization/BooksByCategory";
 
 export const metadata: Metadata = {
   title:
@@ -12,7 +14,13 @@ export default function Statistics() {
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
-        <StatisticsChart />
+        <LendingTrend />
+      </div>
+      <div className="col-span-12">
+        <MostBorrowedBook />
+      </div>
+       <div className="col-span-12">
+        <BooksByCategory />
       </div>
     </div>
   );
