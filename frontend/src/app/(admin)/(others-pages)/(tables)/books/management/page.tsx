@@ -6,31 +6,71 @@ import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import BasicTableOne from "@/components/tables/Book";
 import BookInputs from "@/components/form/form-elements/BookInputs";
+import LendBookModal from "@/components/form/form-elements/LendBookModal";
 
-import type { Book } from "@/types/book.ts";
+import type { Book } from "@/types/book";
 
 export default function Books() {
   const [showModal, setShowModal] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
+  const [lendingBookId, setLendingBookId] = useState<string | null>(null);
+  const [showLendModal, setShowLendModal] = useState(false);
+
+  const [refresh, setRefresh] = useState(false); // Used to refetch book list
+
   const { setShowHeader } = useHeaderVisibility();
 
   const openModal = () => {
-    setEditingBook(null); // ensure it's clean when adding a new book
+    setEditingBook(null);
     setShowModal(true);
     setShowHeader(false);
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setEditingBook(null); // reset after closing
+    setEditingBook(null);
     setShowHeader(true);
+    setRefresh(!refresh); // Trigger table refresh
   };
 
   const handleEdit = (book: Book) => {
     setEditingBook(book);
     setShowModal(true);
     setShowHeader(false);
+  };
+
+  const handleLend = (bookId: string) => {
+    setLendingBookId(bookId);
+    setShowLendModal(true);
+    setShowHeader(false);
+  };
+
+  const closeLendModal = () => {
+    setLendingBookId(null);
+    setShowLendModal(false);
+    setShowHeader(true);
+  };
+
+  const handleDelete = async (bookId: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this book?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/book/${bookId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Book deleted successfully");
+        setRefresh(!refresh); // Trigger refetch
+      } else {
+        alert("Failed to delete book");
+      }
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      alert("Error occurred while deleting book");
+    }
   };
 
   return (
@@ -45,12 +85,25 @@ export default function Books() {
           >
             + Add Book
           </button>
-          <BasicTableOne onEdit={handleEdit} />
+
+          <BasicTableOne
+            onEdit={handleEdit}
+            onLend={handleLend}
+            onDelete={handleDelete}
+            refresh={refresh}
+          />
         </ComponentCard>
       </div>
 
-      {/* Controlled Modal for Add/Edit */}
+      {/* Add/Edit Modal */}
       <BookInputs isOpen={showModal} onClose={closeModal} book={editingBook} />
+
+      {/* Lend Modal */}
+      <LendBookModal
+        isOpen={showLendModal}
+        onClose={closeLendModal}
+        bookId={lendingBookId}
+      />
     </div>
   );
 }
