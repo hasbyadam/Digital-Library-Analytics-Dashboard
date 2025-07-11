@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Label from "../Label";
 import Input from "../input/BookInputField";
+import { authFetch } from "@/lib/authfetch";
 
 interface LendBookModalProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ const LendBookModal: React.FC<LendBookModalProps> = ({ isOpen, onClose, bookId }
 
     setLoading(true);
     try {
-      await fetch(`http://localhost:8080/api/v1/lending-record/${bookId}`, {
+      await authFetch(`http://localhost:8080/api/v1/lending-record/${bookId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

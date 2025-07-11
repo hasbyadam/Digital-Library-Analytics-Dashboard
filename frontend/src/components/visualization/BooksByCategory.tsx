@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import { authFetch } from "@/lib/authfetch";
 
 // Dynamically import ApexChart
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -13,7 +14,7 @@ export default function BooksByCategoryChart() {
   const [counts, setCounts] = useState<number[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/statistic/books-by-category")
+    authFetch("http://localhost:8080/api/v1/statistic/books-by-category")
       .then((res) => res.json())
       .then((json) => {
         if (json.status && json.data) {

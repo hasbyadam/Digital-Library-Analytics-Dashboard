@@ -6,6 +6,7 @@ import Input from "../input/BookInputField";
 import Select from "../Select";
 import { ChevronDownIcon } from "../../../icons";
 import type { Book } from "@/types/book.ts";
+import { authFetch } from "@/lib/authfetch";
 
 interface BookInputsProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ export default function BookInputs({ isOpen, onClose, book }: BookInputsProps) {
 
       const method = book ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      const response = await authFetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",

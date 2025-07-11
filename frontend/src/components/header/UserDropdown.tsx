@@ -1,23 +1,32 @@
 "use client";
+
 import Image from "next/image";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
-function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-  e.stopPropagation();
-  setIsOpen((prev) => !prev);
-}
+  function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.stopPropagation();
+    setIsOpen((prev) => !prev);
+  }
 
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  function handleLogout() {
+    localStorage.removeItem("token"); // ⬅️ Clear the JWT token
+    router.push("/login"); // ⬅️ Redirect to login page
+  }
+
   return (
     <div className="relative">
       <button
-        onClick={toggleDropdown} 
+        onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
@@ -64,6 +73,17 @@ function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
             hasbyadam@gmail.com
           </span>
         </div>
+
+        {/* Divider */}
+        <div className="my-3 border-t border-gray-200 dark:border-gray-700" />
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="w-full text-left px-2 py-2 rounded-md text-sm text-red-600 hover:bg-red-50 dark:hover:bg-gray-800"
+        >
+          Logout
+        </button>
       </Dropdown>
     </div>
   );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import { authFetch } from "@/lib/authfetch";
 
 // Dynamically load ApexChart (disable SSR)
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -18,7 +19,7 @@ export default function MostBorrowedBooksChart() {
 
   const fetchMostBorrowedBooks = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/v1/statistic/most-borrowed-book");
+      const res = await authFetch("http://localhost:8080/api/v1/statistic/most-borrowed-book");
       const json = await res.json();
 
       if (json.status && json.data) {

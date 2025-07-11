@@ -33,6 +33,7 @@ require (
 )
 
 require (
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jinzhu/copier v0.4.0
 	golang.org/x/sys v0.28.0 // indirect
 	gopkg.in/guregu/null.v4 v4.0.0

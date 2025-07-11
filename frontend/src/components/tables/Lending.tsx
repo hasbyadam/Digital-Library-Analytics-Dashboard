@@ -7,6 +7,7 @@ import { format } from "date-fns";
 
 import { LendingRecord } from "@/types/lending";
 import { useHeaderVisibility } from "@/context/HeaderVisibilityContext";
+import { authFetch } from "@/lib/authfetch";
 
 interface LendingTableProps {
   records: LendingRecord[];
@@ -40,7 +41,7 @@ export default function LendingTable({
     if (!returningId || !returnDate) return;
 
     try {
-      const res = await fetch(`http://localhost:8080/api/v1/lending-record/${returningId}`, {
+      const res = await authFetch(`http://localhost:8080/api/v1/lending-record/${returningId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ return_date: new Date(returnDate).toISOString() }),
@@ -58,7 +59,7 @@ export default function LendingTable({
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/v1/lending-record/${id}`, {
+      const res = await authFetch(`http://localhost:8080/api/v1/lending-record/${id}`, {
         method: "DELETE",
       });
 

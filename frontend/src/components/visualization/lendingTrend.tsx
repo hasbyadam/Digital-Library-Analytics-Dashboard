@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { authFetch } from "@/lib/authfetch";
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -14,7 +15,7 @@ export default function StatisticsChart() {
   const [returnedData, setReturnedData] = useState<number[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/statistic/monthly-trend")
+    authFetch("http://localhost:8080/api/v1/statistic/monthly-trend")
       .then((res) => res.json())
       .then((json) => {
         if (json.status && json.data) {

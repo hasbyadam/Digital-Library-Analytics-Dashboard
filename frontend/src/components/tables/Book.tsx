@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Book } from "@/types/book";
+import { authFetch } from "@/lib/authfetch";
 
 interface BasicTableOneProps {
   onEdit: (book: Book) => void;
@@ -20,7 +21,7 @@ export default function BasicTableOne({
 
   const fetchBooks = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/v1/book");
+      const res = await authFetch("http://localhost:8080/api/v1/book");
       const result = await res.json();
       if (result.status && result.data) {
         setBooks(result.data);

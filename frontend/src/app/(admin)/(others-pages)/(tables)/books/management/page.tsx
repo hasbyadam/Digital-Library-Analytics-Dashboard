@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useHeaderVisibility } from "@/context/HeaderVisibilityContext";
 import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
@@ -9,15 +9,18 @@ import BookInputs from "@/components/form/form-elements/BookInputs";
 import LendBookModal from "@/components/form/form-elements/LendBookModal";
 
 import type { Book } from "@/types/book";
+import { useAuth } from "@/hooks/useAuth";
+import { authFetch } from "@/lib/authfetch";
+
 
 export default function Books() {
+  const { isAuthenticated, loading: authLoading } = useAuth();
+
   const [showModal, setShowModal] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
-
   const [lendingBookId, setLendingBookId] = useState<string | null>(null);
   const [showLendModal, setShowLendModal] = useState(false);
-
-  const [refresh, setRefresh] = useState(false); // Used to refetch book list
+  const [refresh, setRefresh] = useState(false);
 
   const { setShowHeader } = useHeaderVisibility();
 
@@ -31,7 +34,7 @@ export default function Books() {
     setShowModal(false);
     setEditingBook(null);
     setShowHeader(true);
-    setRefresh(!refresh); // Trigger table refresh
+    setRefresh(!refresh);
   };
 
   const handleEdit = (book: Book) => {
@@ -57,13 +60,13 @@ export default function Books() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/book/${bookId}`, {
+      const response = await authFetch(`http://localhost:8080/api/v1/book/${bookId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
         alert("Book deleted successfully");
-        setRefresh(!refresh); // Trigger refetch
+        setRefresh(!refresh);
       } else {
         alert("Failed to delete book");
       }
@@ -73,10 +76,12 @@ export default function Books() {
     }
   };
 
+  if (authLoading) return <div>Loading...</div>;
+  if (!isAuthenticated) return null;
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Books" />
-
       <div className="space-y-6">
         <ComponentCard title="List">
           <button
@@ -95,10 +100,7 @@ export default function Books() {
         </ComponentCard>
       </div>
 
-      {/* Add/Edit Modal */}
       <BookInputs isOpen={showModal} onClose={closeModal} book={editingBook} />
-
-      {/* Lend Modal */}
       <LendBookModal
         isOpen={showLendModal}
         onClose={closeLendModal}
