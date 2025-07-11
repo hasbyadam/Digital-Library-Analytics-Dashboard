@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import ComponentCard from "@/components/common/ComponentCard";
 import LendingTable from "@/components/tables/Lending";
-import type { LendingRecord } from "@/types/lending.ts";
+import type { LendingRecord } from "@/types/lending";
 
 export default function LendingsPage() {
   const [records, setRecords] = useState<LendingRecord[]>([]);
@@ -16,29 +16,33 @@ export default function LendingsPage() {
   }, []);
 
   const fetchLendingRecords = async () => {
-  try {
-    const res = await fetch("http://localhost:8080/api/v1/lending-record");
-    const json = await res.json();
+    try {
+      const res = await fetch("http://localhost:8080/api/v1/lending-record");
+      const json = await res.json();
 
-    if (!json.status || !Array.isArray(json.data)) {
-      throw new Error("Invalid response format");
+      if (!json.status || !Array.isArray(json.data)) {
+        throw new Error("Invalid response format");
+      }
+
+      setRecords(json.data);
+    } catch (err) {
+      setError("Failed to fetch lending records: " + err);
+    } finally {
+      setLoading(false);
     }
-
-    setRecords(json.data);
-  } catch (err) {
-    setError("Failed to fetch lending records: " + err);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div>
       <PageBreadcrumb pageTitle="Lending Records" />
       <div className="space-y-6">
         <ComponentCard title="Lending History">
-          <LendingTable records={records} loading={loading} error={error} />
+          <LendingTable
+            records={records}
+            loading={loading}
+            error={error}
+            refresh={fetchLendingRecords}
+          />
         </ComponentCard>
       </div>
     </div>
