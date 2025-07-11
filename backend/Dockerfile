@@ -11,7 +11,7 @@ COPY . .
 # Build the Go app
 RUN go build -o main ./cmd/*.go
 
-EXPOSE 8081
+EXPOSE 8080
 
 # Run the executable
 ENTRYPOINT ["./main"]
