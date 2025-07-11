@@ -33,7 +33,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <HeaderVisibilityProvider>
-      <LayoutContent children={children} />
+      <LayoutContent>
+        {children}
+      </LayoutContent>
     </HeaderVisibilityProvider>
   );
 }

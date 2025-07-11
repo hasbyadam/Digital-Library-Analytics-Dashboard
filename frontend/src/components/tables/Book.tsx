@@ -41,7 +41,7 @@ export default function BasicTableOne({ onEdit }: Props) {
 
       setBooks(booksArray);
     } catch (err) {
-      setError("Failed to fetch books");
+      setError("Failed to fetch books err: " + err);
     } finally {
       setLoading(false);
     }
