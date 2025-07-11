@@ -1,6 +1,5 @@
 "use client";
 
-import type { Metadata } from "next";
 import React from "react";
 import LendingTrend from "@/components/visualization/lendingTrend";
 import MostBorrowedBook from "@/components/visualization/MostBorrowedBook";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Trash2, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -53,7 +53,7 @@ export default function LendingTable({
       refresh();
       closeReturnModal();
     } catch (err) {
-      toast.error("Error returning book");
+      toast.error("Error returning book " + err);
     }
   };
 
@@ -68,7 +68,7 @@ export default function LendingTable({
       toast.success("Lending record deleted");
       refresh();
     } catch (err) {
-      toast.error("Error deleting record");
+      toast.error("Error deleting record " + err);
     }
   };
 

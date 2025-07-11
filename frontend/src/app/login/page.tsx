@@ -30,8 +30,8 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token); // Save token
       toast.success("Logged in successfully");
       router.push("/"); // Redirect after login
-    } catch (err: any) {
-      toast.error(err.message || "Login failed");
+    } catch (err) {
+      toast.error("Login failed " + err);
     } finally {
       setLoading(false);
     }

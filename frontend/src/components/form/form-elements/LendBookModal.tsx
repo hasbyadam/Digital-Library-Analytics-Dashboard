@@ -21,7 +21,7 @@ const LendBookModal: React.FC<LendBookModalProps> = ({ isOpen, onClose, bookId }
   useEffect(() => {
     if (isOpen) {
       setBorrower("");
-      setBorrowDate(today);
+      setBorrowDate("");
     }
   }, [isOpen]);
 
