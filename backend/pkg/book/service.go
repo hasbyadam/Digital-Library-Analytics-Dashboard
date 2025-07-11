@@ -12,6 +12,7 @@ type Service interface {
 	FetchBook() (*[]presenter.Book, error)
 	UpdateBook(*entity.Book) (*entity.Book, error)
 	RemoveBook(ID uuid.UUID) error
+	FetchBookById(id uuid.UUID) (*presenter.Book, error)
 }
 
 type service struct {
@@ -40,4 +41,8 @@ func (s *service) UpdateBook(book *entity.Book) (*entity.Book, error) {
 
 func (s *service)RemoveBook(ID uuid.UUID) error {
 	return s.repository.DeleteBook(ID)
+}
+
+func (s *service) FetchBookById(id uuid.UUID) (*presenter.Book, error) {
+	return s.repository.ReadBookById(id)
 }

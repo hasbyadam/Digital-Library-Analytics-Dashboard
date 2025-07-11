@@ -19,19 +19,19 @@ func AddBook(service book.Service) fiber.Handler {
 		err := c.BodyParser(&requestBody)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
-			return c.JSON(presenter.BookErrorResponse(err))
+			return c.JSON(presenter.ErrorResponse(err))
 		}
 		if requestBody.Author == "" || requestBody.Title == "" {
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(presenter.BookErrorResponse(errors.New(
+			return c.JSON(presenter.ErrorResponse(errors.New(
 				"please specify title and author")))
 		}
 		result, err := service.InsertBook(&requestBody)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(presenter.BookErrorResponse(err))
+			return c.JSON(presenter.ErrorResponse(err))
 		}
-		return c.JSON(presenter.BookSuccessResponse(result))
+		return c.JSON(presenter.SuccessResponse(result))
 	}
 }
 
@@ -40,9 +40,9 @@ func GetBooks(service book.Service) fiber.Handler {
 		result, err := service.FetchBook()
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(presenter.BookErrorResponse(err))
+			return c.JSON(presenter.ErrorResponse(err))
 		}
-		return c.JSON(presenter.BooksSuccessResponse(result))
+		return c.JSON(presenter.SuccessResponse(result))
 	}
 }
 
@@ -51,42 +51,51 @@ func UpdateBook(service book.Service) fiber.Handler {
 		id := c.Params("id")
 		if id == "" {
 			c.Status(http.StatusBadRequest)
-			return c.JSON(presenter.BookErrorResponse(fmt.Errorf("missing book ID in path")))
+			return c.JSON(presenter.ErrorResponse(fmt.Errorf("missing book ID in path")))
+		}
+
+		idParsed, err := uuid.Parse(id)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return c.JSON(presenter.ErrorResponse(errors.New("invalid id")))
 		}
 
 		var requestBody entity.Book
-		err := c.BodyParser(&requestBody)
+		err = c.BodyParser(&requestBody)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
-			return c.JSON(presenter.BookErrorResponse(err))
+			return c.JSON(presenter.ErrorResponse(err))
 		}
 
-		// Override ID from path to ensure correctness
-		requestBody.ID = uuid.MustParse(id)
-
+		requestBody.ID = idParsed
 		result, err := service.UpdateBook(&requestBody)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(presenter.BookErrorResponse(err))
+			return c.JSON(presenter.ErrorResponse(err))
 		}
 
-		return c.JSON(presenter.BookSuccessResponse(result))
+		return c.JSON(presenter.SuccessResponse(result))
 	}
 }
-
 
 func RemoveBook(service book.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		if id == "" {
 			c.Status(http.StatusBadRequest)
-			return c.JSON(presenter.BookErrorResponse(fmt.Errorf("missing book ID in path")))
+			return c.JSON(presenter.ErrorResponse(fmt.Errorf("missing book ID in path")))
 		}
 
-		err := service.RemoveBook(uuid.MustParse(id))
+		idParsed, err := uuid.Parse(id)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return c.JSON(presenter.ErrorResponse(errors.New("invalid id")))
+		}
+
+		err = service.RemoveBook(idParsed)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(presenter.BookErrorResponse(err))
+			return c.JSON(presenter.ErrorResponse(err))
 		}
 
 		return c.JSON(&fiber.Map{

@@ -14,6 +14,7 @@ type Repository interface {
 	AddBook(book *entity.Book) (*entity.Book, error)
 	UpdateBook(book *entity.Book) (*entity.Book, error)
 	DeleteBook(ID uuid.UUID) error
+	ReadBookById(ID uuid.UUID) (*presenter.Book, error)
 }
 type repository struct {
 	Db *gorm.DB
@@ -62,3 +63,16 @@ func (r *repository) DeleteBook(ID uuid.UUID) error {
 	}
 	return nil
 }
+
+func (r *repository) ReadBookById(id uuid.UUID) (*presenter.Book, error) {
+    var book entity.Book
+    tx := r.Db.Table("digital_library.books").Where("id = ?", id).First(&book)
+    if tx.Error != nil {
+        return nil, tx.Error
+    }
+    var presenterBook presenter.Book
+    copier.Copy(&presenterBook, &book)
+    return &presenterBook, nil
+}
+
+

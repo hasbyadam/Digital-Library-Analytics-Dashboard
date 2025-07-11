@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/hasbyadam/Digital-Library-Analytics-Dashboard/pkg/book"
+	"github.com/hasbyadam/Digital-Library-Analytics-Dashboard/pkg/lending_record"
 	"github.com/hasbyadam/Digital-Library-Analytics-Dashboard/rest/route"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
@@ -45,6 +46,9 @@ func main() {
 	bookRepo := book.NewRepo(db)
 	bookService := book.NewService(bookRepo)
 
+	lendingRecordRepo := lendingRecord.NewRepo(db)
+	lendingRecordService := lendingRecord.NewService(lendingRecordRepo, bookService)
+
 	app := fiber.New()
 	app.Use(cors.New())
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -55,6 +59,7 @@ func main() {
 	v1 := api.Group("/v1")
 
 	route.BookRouter(v1, bookService)
+	route.LendingRecordRouter(v1, lendingRecordService)
 
 	log.Fatal(app.Listen(":8080"))
 }
