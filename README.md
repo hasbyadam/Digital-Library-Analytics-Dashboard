@@ -12,6 +12,9 @@ To set up the application, please follow these steps:
 4. Wait for the containers to start and the database to initialize.
 5. Run the database table ddl and data injection (optional).
 6. Access the application through your web browser at `http://localhost:3000`.
+7. The default credential for logging in are admin:password 
+
+**Postman Docs : https://documenter.getpostman.com/view/18945782/2sB34fmLud
 
 **Database Schema Explanation**
 -----------------------------
